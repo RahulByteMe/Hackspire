@@ -1,35 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { AppShell } from "./components/AppShell";
+import { ElectionsPage } from "./pages/ElectionsPage";
+import { HomePage } from "./pages/HomePage";
+import { NotFoundPage } from "./pages/NotFoundPage";
+import { ResultsPage } from "./pages/ResultsPage";
+import { VerifyPage } from "./pages/VerifyPage";
+import { VotePage } from "./pages/VotePage";
+import { AdminLayout } from "./admin/AdminLayout";
+import { AdminLoginPage } from "./admin/AdminLoginPage";
+import { AdminDashboardPage } from "./admin/AdminDashboardPage";
+import { AdminElectionsPage } from "./admin/AdminElectionsPage";
+import { AdminCandidatesPage } from "./admin/AdminCandidatesPage";
+import { AdminResultsPage } from "./admin/AdminResultsPage";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export function App() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <Routes>
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<Navigate to="/admin/login" replace />} />
+        <Route path="login" element={<AdminLoginPage />} />
+        <Route path="dashboard" element={<AdminDashboardPage />} />
+        <Route path="elections" element={<AdminElectionsPage />} />
+        <Route path="elections/:electionId/candidates" element={<AdminCandidatesPage />} />
+        <Route path="results" element={<AdminResultsPage />} />
+      </Route>
 
-export default App
+      <Route path="/" element={<AppShell />}>
+        <Route index element={<HomePage />} />
+        <Route path="verify" element={<VerifyPage />} />
+        <Route path="elections" element={<ElectionsPage />} />
+        <Route path="elections/:electionId/vote" element={<VotePage />} />
+        <Route path="elections/:electionId/results" element={<ResultsPage />} />
+        <Route path="home" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
+    </Routes>
+  );
+}
