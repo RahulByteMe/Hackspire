@@ -6,6 +6,7 @@ import { Input, Label } from "../components/Input";
 import { useWallet } from "../state/wallet";
 import { isVerified, setVerified } from "../lib/storage";
 import { useToast } from "../state/toast";
+import api  from "../lib/api";
 
 function normalizeAadhaar(s) {
   return s.replace(/\s+/g, "").slice(0, 12);

@@ -4,7 +4,6 @@ import { Card } from "../components/Card";
 import { Badge } from "../components/Badge";
 import { Button } from "../components/Button";
 import { getElections, clearAllStoredData } from "../lib/electionStore";
-import { getApiBaseUrl, clearAllCandidatesOnBackend } from "../lib/api";
 import { useToast } from "../state/toast";
 
 export function AdminDashboardPage() {
