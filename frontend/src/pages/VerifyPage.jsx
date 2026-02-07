@@ -34,27 +34,57 @@ export function VerifyPage() {
     return canSend && otpSent && otp.trim().length === 6;
   }, [canSend, otp, otpSent]);
 
-  const onSendOtp = () => {
-    const code = generateOtp();
-    setGeneratedOtp(code);
+const onSendOtp = async () => {
+  try {
+    const res = await api.post("/otp/send-otp", {
+      aadhaar: normalizeAadhaar(aadhaar)
+    });
+
     setOtpSent(true);
-    setOtp("");
+
     toast.push({
       kind: "success",
-      title: "OTP sent (simulated)",
-      message: `Use code ${code} to verify.`
+      title: "OTP sent",
+      message: res.data.message
     });
-  };
 
-  const onVerify = () => {
-    if (!wallet.address) return;
-    if (generatedOtp && otp.trim() !== generatedOtp) {
-      toast.push({ kind: "error", title: "Invalid OTP", message: "Please enter the 6-digit OTP sent." });
-      return;
-    }
+  } catch (err) {
+    toast.push({
+      kind: "error",
+      title: "Failed",
+      message: err.response?.data?.message || "Error sending OTP"
+    });
+  }
+};
+
+
+const onVerify = async () => {
+  if (!wallet.address) return;
+
+  try {
+    const res = await api.post("/otp/verify-otp", {
+      aadhaar: normalizeAadhaar(aadhaar),
+      otp,
+      wallet: wallet.address
+    });
+
     setVerified(wallet.address, true);
-    toast.push({ kind: "success", title: "Identity verified" });
-  };
+
+    toast.push({
+      kind: "success",
+      title: "Verified",
+      message: res.data.message
+    });
+
+  } catch (err) {
+    toast.push({
+      kind: "error",
+      title: "Verification failed",
+      message: err.response?.data?.message || "Error"
+    });
+  }
+};
+
 
   return (
     <div className="mx-auto grid max-w-2xl gap-6">
