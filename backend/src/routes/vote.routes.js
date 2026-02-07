@@ -1,6 +1,6 @@
 import express from "express";
 import { castVote } from "../controllers/vote.controller.js";
-import { voteValidator } from "../validators/election.validator.js";
+import { voteValidator } from "../validators/index.js";
 import { validate } from "../middlewares/validator.middleware.js";
 
 const router = express.Router();

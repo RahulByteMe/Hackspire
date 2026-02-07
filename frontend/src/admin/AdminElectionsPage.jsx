@@ -13,6 +13,7 @@ import {
 import { useToast } from "../state/toast";
 import { useWallet } from "../state/wallet";
 import { formatDuration } from "../lib/format";
+import api from "../lib/api";
 
 export function AdminElectionsPage() {
   const wallet = useWallet();
@@ -29,32 +30,56 @@ export function AdminElectionsPage() {
   const now = Date.now();
 
   const handleCreate = async () => {
-    const start = startAt ? new Date(startAt).getTime() : now;
-    const end = endsAt ? new Date(endsAt).getTime() : now + 24 * 60 * 60 * 1000;
-    if (!name.trim()) {
-      toast.push({ kind: "error", title: "Name required" });
-      return;
-    }
-    if (end <= start) {
-      toast.push({ kind: "error", title: "End time must be after start time" });
-      return;
-    }
-    try {
-      setSubmitting(true);
-      createElection({ name: name.trim(), description: description.trim() || undefined, startAt: start, endsAt: end });
-      toast.push({ kind: "success", title: "Election created" });
-      setName("");
-      setDescription("");
-      setStartAt("");
-      setEndsAt("");
-      setShowCreate(false);
-      setTick((x) => x + 1);
-    } catch (e) {
-      toast.push({ kind: "error", title: "Failed", message: e?.message });
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const start = startAt
+    ? Math.floor(new Date(startAt).getTime() / 1000)
+    : Math.floor(Date.now() / 1000) + 60;
+
+  const end = endsAt
+    ? Math.floor(new Date(endsAt).getTime() / 1000)
+    : start + 86400;
+
+  if (!name.trim()) {
+    toast.push({ kind: "error", title: "Name required" });
+    return;
+  }
+
+  if (end <= start) {
+    toast.push({ kind: "error", title: "End time must be after start time" });
+    return;
+  }
+
+  try {
+    setSubmitting(true);
+
+    const res = await api.post("/election/create-election", {
+      title: name.trim(),
+      startTime: start,
+      endTime: end
+    });
+
+    toast.push({
+      kind: "success",
+      title: "Election created",
+      message: res.data.message
+    });
+
+    setName("");
+    setDescription("");
+    setStartAt("");
+    setEndsAt("");
+    setShowCreate(false);
+
+  } catch (e) {
+    toast.push({
+      kind: "error",
+      title: "Failed",
+      message: e.response?.data?.message || "Error creating election"
+    });
+  } finally {
+    setSubmitting(false);
+  }
+};
+
 
   const handleStart = (id) => {
     startElection(id);

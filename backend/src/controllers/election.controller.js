@@ -24,6 +24,30 @@ export const createElection = async (req, res) => {
   }
 };
 
+export const getAllElections = async (req, res) => {
+  const count = await contract.electionCount();
+
+  const elections = [];
+
+  for (let i = 0; i < Number(count); i++) {
+    const data = await contract.getElection(i);
+
+    elections.push({
+      id: i,
+      title: data[0],
+      startTime: Number(data[1]),
+      endTime: Number(data[2]),
+      candidateCount: Number(data[3])
+    });
+  }
+
+  res.json({
+    success: true,
+    elections
+  });
+};
+
+
 export const addCandidate = async (req, res) => {
   try {
     const { electionId, name } = req.body;

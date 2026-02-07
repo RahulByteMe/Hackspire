@@ -8,6 +8,7 @@ const envAdmins = (import.meta.env.VITE_ADMIN_ADDRESSES ?? "").trim();
 const defaultAdmins = [
   // MetaMask address(es) – must be strings
   "0xA4Bc0c9A15580F6db0DE5108c124B7e633b463e0",
+  "0x279B7fab00db1F204ea33E463a1d0b3FBac47efd"
 ];
 
 const ADMIN_ADDRESSES = new Set(
