@@ -4,6 +4,7 @@ import cors from "cors";
 import otpRoutes from "./routes/verification.routes.js";
 import electionRoutes from "./routes/election.routes.js";
 import voteRoutes from "./routes/vote.routes.js";
+import getResults from "./routes/result.routes.js";
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.get("/", (req, res) => {
 app.use("/api/otp", otpRoutes);
 app.use("/api/election", electionRoutes);
 app.use("/api/vote", voteRoutes);
+app.use("/api/result",getResults);
 
 
 export default app;
