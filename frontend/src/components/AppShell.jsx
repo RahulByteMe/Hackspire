@@ -4,6 +4,7 @@ import { useWallet } from "../state/wallet";
 import { shortAddress } from "../lib/format";
 import { Button } from "./Button";
 import { Badge } from "./Badge";
+import logo from "../img/image.png"
 
 export function AppShell() {
   const wallet = useWallet();
@@ -13,11 +14,18 @@ export function AppShell() {
       <header className="sticky top-0 z-40 border-b border-white/10 bg-slate-950/70 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-center gap-2">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-300" />
-            <div className="leading-tight">
-              <div className="text-sm font-extrabold tracking-wide">Hackspire</div>
-              <div className="text-xs text-slate-400">Hybrid Blockchain Voting</div>
-            </div>
+  <div className="flex items-center gap-4">
+  <img
+    src={logo}
+    alt="Hackspire Logo"
+    className="h-14 w-auto object-contain"
+  />
+
+  <div>
+    <h1 className="text-2xl font-semibold text-white">Hackspire</h1>
+    <p className="text-sm text-gray-400">Hybrid Blockchain Voting</p>
+  </div>
+</div>
           </Link>
 
           <nav className="hidden items-center gap-2 md:flex">
