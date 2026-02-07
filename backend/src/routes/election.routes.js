@@ -15,4 +15,5 @@ router.post("/add-candidate", addCandidateValidator(),  validate, addCandidate);
 router.post("/register-voter", registerVoter);
 router.get("/get-election/:id", getElection);
 
+
 export default router;
