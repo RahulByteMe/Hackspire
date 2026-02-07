@@ -10,29 +10,25 @@ const sendOtpValidator = () => {
 }
 
 const verifyOtpValidator = () => {
-    return [
-        
-  body("aadhaar")
-    .notEmpty().withMessage("Aadhaar is required")
-    .isLength({ min: 12, max: 12 }).withMessage("Aadhaar must be 12 digits")
-    .isNumeric().withMessage("Aadhaar must contain only numbers"),
+  return [
+    body("aadhaar")
+      .notEmpty().withMessage("Aadhaar is required")
+      .isLength({ min: 12, max: 12 }).withMessage("Aadhaar must be 12 digits")
+      .isNumeric().withMessage("Aadhaar must contain only numbers"),
 
-  body("otp")
-    .notEmpty().withMessage("OTP is required")
-    .isLength({ min: 6, max: 6 }).withMessage("OTP must be 6 digits")
-    .isNumeric().withMessage("OTP must contain only numbers"),
+    body("otp")
+      .notEmpty().withMessage("OTP is required")
+      .isLength({ min: 6, max: 6 }).withMessage("OTP must be 6 digits")
+      .isNumeric().withMessage("OTP must contain only numbers"),
 
-  body("wallet")
-    .notEmpty().withMessage("Wallet address is required")
-    .matches(/^0x[a-fA-F0-9]{40}$/)
-    .withMessage("Invalid Ethereum wallet address"),
+    body("wallet")
+      .notEmpty().withMessage("Wallet address is required")
+      .matches(/^0x[a-fA-F0-9]{40}$/)
+      .withMessage("Invalid Ethereum wallet address")
+  ];
+};
 
-  body("electionId")
-    .notEmpty().withMessage("Election ID is required")
-    .isInt({ min: 0 }).withMessage("Election ID must be a positive integer")
 
-    ]
-}
 
 
 
