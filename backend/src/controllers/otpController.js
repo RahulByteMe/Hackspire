@@ -23,6 +23,8 @@ export const sendOtp = asyncHandler(async (req, res) => {
   const { aadhaar } = req.body;
   const aadhaarHash = hashAadhaar(aadhaar)
 
+  await Otp.deleteMany({ aadhaarHash });
+
   if (!aadhaar) {
     return res.status(400).json({ message: "Aadhaar is required" });
   }
@@ -68,22 +70,37 @@ export const sendOtp = asyncHandler(async (req, res) => {
 
 export const verifyOtp = asyncHandler(async (req, res) => {
 
-  const { aadhaar, otp, wallet, electionId } = req.body;
+ const { aadhaar, otp, wallet} = req.body;
 
-  if (!aadhaar || !otp || !wallet || electionId === undefined) {
+
+
+  if (!aadhaar || !otp || !wallet) {
     return res.status(400).json({
-      message: "Aadhaar, OTP, wallet and electionId are required"
+      message: "Aadhaar, OTP and wallet are required"
     });
   }
 
   const aadhaarHash = hashAadhaar(aadhaar);
   const normalizedWallet = wallet.toLowerCase();
 
-  const otpRecord = await Otp.findOne({ aadhaarHash });
+  const otpRecord = await Otp.findOne({ aadhaarHash })
+  .sort({ createdAt: -1 });
 
-  if (!otpRecord || otpRecord.otp !== otp) {
-    return res.status(400).json({ message: "Invalid OTP" });
-  }
+if (!otpRecord) {
+  return res.status(400).json({ message: "OTP not found" });
+}
+
+if (otpRecord.expiresAt < new Date()) {
+  await Otp.deleteMany({ aadhaarHash });
+  return res.status(400).json({
+    message: "OTP expired. Please request again."
+  });
+}
+
+if (otpRecord.otp.toString() !== otp.toString()) {
+  return res.status(400).json({ message: "Invalid OTP" });
+}
+
 
   if (otpRecord.expiresAt < new Date()) {
     await Otp.deleteMany({ aadhaarHash });
@@ -112,15 +129,13 @@ export const verifyOtp = asyncHandler(async (req, res) => {
     verified: true
   });
 
-  const tx = await contract.registerVoter(electionId, normalizedWallet);
-  await tx.wait();
+ 
 
   await Otp.deleteMany({ aadhaarHash });
 
   return res.status(200).json({
     success: true,
-    message: "Identity verified & voter registered on blockchain",
-    txHash: tx.hash,
+    message: "Identity verified",
     user: {
       wallet: user.wallet,
       verified: user.verified
