@@ -7,7 +7,7 @@ import { Input, Label } from "../components/Input";
 import { useToast } from "../state/toast";
 
 export function AdminCandidatesPage() {
-  const { id } = useParams();
+  const { electionId } = useParams();
   const toast = useToast();
 
   const [name, setName] = useState("");
@@ -23,7 +23,7 @@ export function AdminCandidatesPage() {
       setLoading(true);
 
       const res = await api.post("/election/add-candidate", {
-        electionId: parseInt(id),
+        electionId: Number(electionId),
         name
       });
 
@@ -34,7 +34,6 @@ export function AdminCandidatesPage() {
       });
 
       setName("");
-
     } catch (err) {
       toast.push({
         kind: "error",

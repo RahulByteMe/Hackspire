@@ -227,7 +227,7 @@ export function AdminElectionsPage() {
         <div className="flex gap-2">
           <Button
             variant="secondary"
-            onClick={() => navigate(`/elections/${e.id}/candidates`)}
+            onClick={() => navigate(`/admin/elections/${e.id}/candidates`)}
           >
             Add Candidate
           </Button>
